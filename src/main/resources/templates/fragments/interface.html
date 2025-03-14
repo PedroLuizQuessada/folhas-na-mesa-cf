@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:fragment="headTag">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <link rel="shortcut icon" type="image/png" th:href="@{/img/favicon.png}"/>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
+        <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+
+        <script>
+            $(document).ready(function(){
+                $('.button').click(function(){
+                    if($(this).hasClass('expand')){
+                        $('ul').slideUp(function(){
+                            $('.button').removeClass('expand');
+                            $('.fas').removeClass('expand')
+                        });
+                    }else{
+                        $(this).addClass('expand');
+                        setTimeout(function(){
+                            $('.fas').addClass('expand');
+                            $('ul').stop().slideDown();
+                        },200);
+                    }
+                });
+            });
+        </script>
+
+        <script>
+            document.addEventListener("wheel", function(event){
+                if(document.activeElement.type === "number"){
+                    document.activeElement.blur();
+                }
+            });
+        </script>
+    </th:block>
+
+    <style th:fragment="css">
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Open Sans", sans-serif;
+        }
+        .menu-container{
+            position: absolute;
+            top: 5%;
+            left: 85%;
+            transform: translate(-50%, -50%);
+            width: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .button{
+            position: relative;
+            background: #1b1b1b;
+            color: white;
+            font-size: 20px;
+            padding: 8px 20px;
+            width: 150px;
+            line-height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: width .4s;
+        }
+        .button.expand{
+            width: 100%;
+        }
+        ul{
+            list-style: none;
+            position: absolute;
+            top: 65px;
+            background: #1b1b1b;
+            width: 100%;
+            text-align: center;
+            border-radius: 5px;
+            display: none;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+        }
+        ul:before{
+            position: absolute;
+            content: '';
+            width: 20px;
+            height: 20px;
+            background: #1b1b1b;
+            top: -10px;
+            right: 15px;
+            transform: rotate(45deg);
+            z-index: -1;
+        }
+        ul li{
+            line-height: 35px;
+            padding: 8px 20px;
+            cursor: pointer;
+            border: 1px solid transparent;
+            border-bottom: 1px solid rgba(255,255,255,.1);
+        }
+        ul li:last-child{
+            border-bottom: none;
+        }
+        ul li a{
+            color: white;
+            font-size: 18px;
+            text-decoration: none;
+        }
+        /* Chrome, Safari, Edge, Opera */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        /* Firefox */
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+    </style>
+</head>
+<body>
+<div class="menu-container" th:fragment="menu">
+    <div class="button">
+        Menu
+        <span class="fas fa-bars"></span>
+    </div>
+    <ul>
+        <li th:if="${pagina != 'automacoes'}"><a style="text-decoration: none;" th:href="@{'/automacoes/true'}">Automações</a></li>
+        <li th:if="${adm && pagina == 'automacoes'}"><a style="text-decoration: none;" th:href="@{/automacoes/novo}">Adicionar automação</a></li>
+        <li th:if="${adm && pagina != 'usuarios'}"><a style="text-decoration: none;" th:href="@{/usuarios}">Usuários</a></li>
+        <li th:if="${adm && pagina == 'usuarios'}"><a style="text-decoration: none;" th:href="@{/usuarios/novo}">Adicionar usuário</a></li>
+        <li th:if="${adm && pagina != 'tokens'}"><a style="text-decoration: none;" th:href="@{'/tokens/true'}">Tokens</a></li>
+        <li th:if="${adm && pagina == 'tokens'}"><a style="text-decoration: none;" th:href="@{/tokens/novo}">Adicionar token</a></li>
+        <li th:if="${adm && pagina != 'pendencias'}"><a style="text-decoration: none;" th:href="@{/pendencias}">Pendências</a></li>
+        <li><a style="text-decoration: none;" href="#" data-toggle="modal" data-target="#alterarSenha">Alterar senha</a></li>
+        <li>
+            <form th:action="@{/logout}" method="post">
+                <input style="color: white; font-size: 18px; background: #1b1b1b; border: #1b1b1b;" type="submit" value="Deslogar">
+            </form>
+        </li>
+    </ul>
+</div>
+
+<div th:fragment="mensagens">
+    <!--/*@thymesVar id="mensagemSucesso" type="java.lang.String"*/-->
+    <div th:if="${mensagemSucesso}" class="alert alert-success alert-dismissible text-center" role="alert">
+        <span type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></span>
+        <p th:utext="${mensagemSucesso}"></p>
+    </div>
+
+    <!--/*@thymesVar id="mensagemErro" type="java.lang.String"*/-->
+    <div th:if="${mensagemErro}" class="alert alert-warning alert-dismissible text-center" role="alert">
+        <span type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></span>
+        <p th:utext="${mensagemErro}"></p>
+    </div>
+</div>
+
+<div class="container" th:fragment="alterarSenha">
+    <div class="modal fade" id="alterarSenha" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content text-center">
+                <div class="modal-header text-center">
+                    <h4 class="modal-title text-center">Informe sua nova senha</h4>
+                </div>
+                <form th:action="@{/alterarsenha}" method="post" style="max-width: 350px; margin: 0 auto">
+                    <div class="modal-body">
+                        <p>
+                            <input type="password" name="senha" class="form-control" placeholder="Nova senha" required autofocus minlength="3" maxlength="64">
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="submit" value="Alterar" class="btn btn-primary">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container" th:fragment="loading">
+    <div class="modal fade" id="loading" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content text-center">
+                <div class="modal-header text-center">
+                    <h4 class="modal-title text-center">Aguarde...</h4>
+                </div>
+                <div class="modal-body">
+                    <img th:src="@{/img/loading.gif}" alt="Carregando...">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:fragment="pesquisarTabela">
+    function pesquisar() {
+        let input1, input2, filter1, filter2, table, tr, td1, td2, i, txtValue1, txtValue2;
+        input1 = document.getElementById("input1");
+        input2 = document.getElementById("input2");
+        filter1 = input1.value.toUpperCase();
+        filter2 = input2.value.toUpperCase();
+        table = document.getElementById("tabela1");
+        tr = table.getElementsByTagName("tr");
+
+        for (i = 0; i < tr.length; i++) {
+            td1 = tr[i].getElementsByTagName("td")[0];
+            td2 = tr[i].getElementsByTagName("td")[1];
+
+            if (td1 && td2) {
+                txtValue1 = td1.textContent || td1.innerText;
+                txtValue2 = td2.textContent || td2.innerText;
+                if (txtValue1.toUpperCase().indexOf(filter1) > -1 && txtValue2.toUpperCase().indexOf(filter2) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+</script>
+
+<script th:fragment="ordenarTabela">
+    function clicar(n, idTabela) {
+        let table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+        table = document.getElementById(idTabela);
+        switching = true;
+        dir = "asc";
+        while (switching) {
+            switching = false;
+            rows = table.rows;
+            for (i = 1; i < (rows.length - 1); i++) {
+                shouldSwitch = false;
+                x = rows[i].getElementsByTagName("TD")[n];
+                y = rows[i + 1].getElementsByTagName("TD")[n];
+                if (dir == "asc") {
+                    if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                        shouldSwitch = true;
+                        break;
+                    }
+                } else if (dir == "desc") {
+                    if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                        shouldSwitch = true;
+                        break;
+                    }
+                }
+            }
+            if (shouldSwitch) {
+                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                switching = true;
+                switchcount ++;
+            } else {
+                if (switchcount == 0 && dir == "asc") {
+                    dir = "desc";
+                    switching = true;
+                }
+            }
+        }
+    }
+</script>
+
+</body>
+</html>

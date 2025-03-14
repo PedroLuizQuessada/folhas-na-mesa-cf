@@ -1,0 +1,2 @@
+INSERT IGNORE INTO usuarios(email, senha, adm) VALUES ("pedroluiz.quessada@gmail.com", "$2a$10$uQFFNAR.WqpCl8zdZdtmxuZLTGOwnTDiDvDXdMRVqN8212Uh/dzRm", true);
+INSERT IGNORE INTO usuarios(email, senha, adm) VALUES ("moraes.jjoyce@gmail.com", "$2a$10$uQFFNAR.WqpCl8zdZdtmxuZLTGOwnTDiDvDXdMRVqN8212Uh/dzRm", false);
